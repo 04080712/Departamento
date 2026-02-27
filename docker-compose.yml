@@ -1,0 +1,13 @@
+services:
+  app:
+    build:
+      context: .
+      args:
+        VITE_SUPABASE_URL: ${VITE_SUPABASE_URL}
+        VITE_SUPABASE_ANON_KEY: ${VITE_SUPABASE_ANON_KEY}
+        VITE_GEMINI_API_KEY: ${VITE_GEMINI_API_KEY}
+    image: departamento-tecnico-app
+    container_name: departamento-tecnico-app
+    ports:
+      - "80:80"
+    restart: unless-stopped

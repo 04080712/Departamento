@@ -1,0 +1,8 @@
+{
+  "name": "Plataforma do Departamento Técnico",
+  "description": "Uma plataforma centralizada para gestão de demandas técnicas, relatórios automáticos e controle operacional de engenharia.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
