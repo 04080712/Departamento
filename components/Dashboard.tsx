@@ -152,8 +152,8 @@ const DemandTable: React.FC<{
                 <tr key={demand.id} className="group hover:bg-gray-50/50 transition-colors">
                   <td className="py-6 pl-4">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center font-black text-[#000080] group-hover:bg-white transition-colors">
-                        {demand.id.substring(0, 2).toUpperCase()}
+                      <div className="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center font-black text-[#000080] group-hover:bg-white transition-colors text-[10px]">
+                        {demand.code}
                       </div>
                       <div>
                         <p className="text-xs font-black text-gray-900 uppercase tracking-tight">{demand.title}</p>
@@ -181,11 +181,19 @@ const DemandTable: React.FC<{
                     )}
                   </td>
                   <td className="py-6">
-                    <div className="flex items-center gap-2">
-                      <CalendarIcon className="w-4 h-4 text-[#000080]" />
-                      <span className="text-xs font-bold text-gray-600">
-                        {new Date(demand.createdAt).toLocaleDateString('pt-BR')}
-                      </span>
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
+                        <CalendarIcon className="w-3.5 h-3.5 text-[#000080]" />
+                        <span className="text-[11px] font-bold text-gray-600">
+                          {new Date(demand.createdAt).toLocaleDateString('pt-BR')}
+                        </span>
+                      </div>
+                      {demand.expectedDate && (
+                        <div className="flex items-center gap-2 bg-blue-50 w-fit px-1.5 py-0.5 rounded-md border border-blue-100">
+                          <Clock className="w-3 h-3 text-blue-600" />
+                          <span className="text-[9px] font-black text-blue-700 uppercase tracking-tighter">Prev: {new Date(demand.expectedDate).toLocaleDateString('pt-BR')}</span>
+                        </div>
+                      )}
                     </div>
                   </td>
                   <td className="py-6">
@@ -240,8 +248,8 @@ const TaskDetailModal: React.FC<{
       <div className="bg-white rounded-[40px] shadow-2xl w-full max-w-2xl overflow-hidden animate-in zoom-in-95 duration-300">
         <div className="p-8 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center font-black text-[#000080]">
-              {demand.id.substring(0, 2).toUpperCase()}
+            <div className="w-16 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center font-black text-[#000080] text-[10px]">
+              {demand.code}
             </div>
             <div>
               <h3 className="text-xl font-black text-gray-950 tracking-tight uppercase">{demand.title}</h3>
@@ -389,7 +397,10 @@ const Dashboard: React.FC<DashboardProps> = ({ demands, serviceRequests, users, 
 
     if (selectedDate) {
       const dateStr = selectedDate.toISOString().split('T')[0];
-      baseList = baseList.filter(d => new Date(d.createdAt).toISOString().split('T')[0] === dateStr);
+      baseList = baseList.filter(d => {
+        const dateToUse = d.expectedDate ? d.expectedDate : d.createdAt;
+        return dateToUse.split('T')[0] === dateStr;
+      });
     }
 
     if (activeFilter) {

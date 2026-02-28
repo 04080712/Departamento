@@ -43,9 +43,10 @@ const CalendarModule: React.FC<CalendarModuleProps> = ({
     const getEventsForDay = (date: Date) => {
         const dateStr = date.toISOString().split('T')[0];
 
-        const dayDemands = demands.filter(d =>
-            new Date(d.createdAt).toISOString().split('T')[0] === dateStr
-        );
+        const dayDemands = demands.filter(d => {
+            const dateToUse = d.expectedDate ? d.expectedDate : d.createdAt;
+            return dateToUse.split('T')[0] === dateStr;
+        });
 
         const dayRequests = serviceRequests.filter(s =>
             new Date(s.createdAt).toISOString().split('T')[0] === dateStr

@@ -5,6 +5,7 @@ import { TaskStatus, UserRole } from '../types.ts';
 // Mapear row do banco para o tipo TechnicalDemand do frontend
 const mapDemand = (row: any): TechnicalDemand => ({
     id: row.id,
+    code: row.code || '',
     title: row.title,
     description: row.description,
     status: row.status as TaskStatus,
@@ -17,6 +18,7 @@ const mapDemand = (row: any): TechnicalDemand => ({
     assignedTo: row.assigned_to || '',
     createdBy: row.created_by || '',
     technicalDetails: row.technical_details || '',
+    expectedDate: row.expected_date,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     files: row.technical_files?.map((f: any): TechnicalFile => ({
@@ -35,16 +37,18 @@ export const getDemands = async (): Promise<TechnicalDemand[]> => {
     const { data, error } = await supabase
         .from('technical_demands')
         .select(`
-            id, 
-            title, 
-            status, 
-            priority, 
-            company, 
-            sector, 
-            assigned_to, 
-            created_by, 
-            created_at, 
-            updated_at
+id,
+    code,
+    title,
+    status,
+    priority,
+    company,
+    sector,
+    assigned_to,
+    created_by,
+    expected_date,
+    created_at,
+    updated_at
         `)
         .order('created_at', { ascending: false })
         .limit(200); // Limite de segurança para performance
@@ -63,8 +67,8 @@ export const getDemandById = async (id: string): Promise<TechnicalDemand> => {
     const { data, error } = await supabase
         .from('technical_demands')
         .select(`
-            *,
-            technical_files (*)
+    *,
+    technical_files(*)
         `)
         .eq('id', id)
         .single();
@@ -92,6 +96,7 @@ export const createDemand = async (
         channel: demand.channel,
         assigned_to: (demand.assignedTo && demand.assignedTo !== '') ? demand.assignedTo : null,
         created_by: userId,
+        expected_date: demand.expectedDate || null,
         technical_details: (demand.technicalDetails && demand.technicalDetails !== '') ? demand.technicalDetails : null,
     };
 
@@ -123,11 +128,11 @@ export const createDemand = async (
         const supabaseKey = (supabase as any).supabaseKey;
         const session = await supabase.auth.getSession();
 
-        const response = await fetch(`${supabaseUrl}/rest/v1/technical_demands`, {
+        const response = await fetch(`${supabaseUrl} /rest/v1 / technical_demands`, {
             method: 'POST',
             headers: {
                 'apikey': supabaseKey,
-                'Authorization': `Bearer ${session.data.session?.access_token}`,
+                'Authorization': `Bearer ${session.data.session?.access_token} `,
                 'Content-Type': 'application/json',
                 'Prefer': 'return=representation'
             },
@@ -136,7 +141,7 @@ export const createDemand = async (
 
         if (!response.ok) {
             const errText = await response.text();
-            throw new Error(`API Error (Fetch): ${response.status} - ${errText}`);
+            throw new Error(`API Error(Fetch): ${response.status} - ${errText} `);
         }
 
         const result = await response.json();
@@ -144,7 +149,7 @@ export const createDemand = async (
     };
 
     const timeout = (ms: number) => new Promise((_, reject) =>
-        setTimeout(() => reject(new Error(`O servidor não respondeu à criação da demanda em ${ms / 1000}s. Verifique sua conexão.`)), ms)
+        setTimeout(() => reject(new Error(`O servidor não respondeu à criação da demanda em ${ms / 1000} s.Verifique sua conexão.`)), ms)
     );
 
     try {
@@ -190,11 +195,12 @@ export const updateDemand = async (
                 type: updates.type,
                 channel: updates.channel,
                 assigned_to: (updates.assignedTo && updates.assignedTo !== '') ? updates.assignedTo : null,
+                expected_date: updates.expectedDate,
                 technical_details: (updates.technicalDetails && updates.technicalDetails !== '') ? updates.technicalDetails : null,
                 updated_at: new Date().toISOString()
             })
             .eq('id', id)
-            .select(`*, technical_files (*)`)
+            .select(`*, technical_files(*)`)
             .single();
 
         if (error) {
@@ -205,7 +211,7 @@ export const updateDemand = async (
     };
 
     const timeout = (ms: number) => new Promise((_, reject) =>
-        setTimeout(() => reject(new Error(`O servidor não respondeu à atualização da demanda em ${ms / 1000}s.`)), ms)
+        setTimeout(() => reject(new Error(`O servidor não respondeu à atualização da demanda em ${ms / 1000} s.`)), ms)
     );
 
     try {

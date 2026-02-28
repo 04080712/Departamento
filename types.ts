@@ -71,9 +71,9 @@ export interface TechnicalFile {
   folder: string;
 }
 
-export type DemandSector = 'VE' | 'VI' | 'ADM' | 'PJ' | '';
+export type DemandSector = 'VE' | 'VI' | 'ADM' | 'PJ' | 'CLIENTE' | '';
 
-export type DemandRequester = 'ALEX BRUNO' | 'JOGEISAKA' | 'VANESSA' | 'ALBERTO RIFER' | 'GABRIEL' | 'OUTRO';
+export type DemandRequester = 'ALEX BRUNO' | 'JOGE ISAKA' | 'VANESSA' | 'ALBERTO RITER' | 'GABRIEL' | 'GABRIEL RITER' | 'LUCAS RITER' | 'OUTRO';
 
 export type DemandType =
   | 'CONSERTO' | 'TESTE' | 'ATENDIMENTO' | 'VISITA' | 'PROJETOS'
@@ -84,6 +84,7 @@ export type DemandChannel = 'WHATSAPP' | 'BLIP' | 'EMAIL' | 'WA VE' | 'REUNIAO';
 
 export interface TechnicalDemand {
   id: string;
+  code?: string;
   title: string;
   description: string;
   status: TaskStatus;
@@ -100,6 +101,7 @@ export interface TechnicalDemand {
   createdAt: string;
   updatedAt: string;
   files: TechnicalFile[];
+  expectedDate?: string;
   technicalDetails?: string;
 }
 

@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { User as UserType, DemandSector, DemandRequester, DemandType, DemandChannel, TaskStatus, UserRole } from '../types.ts';
 
-import { ClipboardCheck, X, Building2, User, Tag, Edit3, Send, Briefcase, Info, XCircle } from 'lucide-react';
+import { ClipboardCheck, X, Building2, User, Tag, Edit3, Send, Briefcase, Info, XCircle, Calendar as CalendarIcon } from 'lucide-react';
 
 
 
@@ -27,7 +27,8 @@ const NewDemandModal: React.FC<NewDemandModalProps> = ({ isOpen, onClose, onSubm
     description: '',
     channel: 'WHATSAPP' as DemandChannel,
     assignedTo: '',
-    priority: 'MEDIUM' as 'LOW' | 'MEDIUM' | 'HIGH'
+    priority: 'MEDIUM' as 'LOW' | 'MEDIUM' | 'HIGH',
+    expectedDate: ''
   });
 
   if (!isOpen) return null;
@@ -100,7 +101,7 @@ const NewDemandModal: React.FC<NewDemandModalProps> = ({ isOpen, onClose, onSubm
             <div className="space-y-2">
               <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Setor Solicitante</label>
               <div className="flex gap-2">
-                {['VE', 'VI', 'ADM', 'PJ', ''].map(sec => (
+                {['VE', 'VI', 'ADM', 'PJ', 'CLIENTE', ''].map(sec => (
                   <button
                     key={sec}
                     type="button"
@@ -108,7 +109,7 @@ const NewDemandModal: React.FC<NewDemandModalProps> = ({ isOpen, onClose, onSubm
                     className={`flex-1 py-4 rounded-2xl text-xs font-black transition-all border ${formData.sector === sec ? 'bg-[#000080] text-white border-[#000080] shadow-lg shadow-blue-900/20' : 'bg-gray-50 text-gray-400 border-gray-100 hover:bg-gray-100'
                       }`}
                   >
-                    {sec === '' ? 'Vazio' : sec}
+                    {sec === '' ? 'Vazio' : sec === 'CLIENTE' ? 'CLIENTE' : sec}
                   </button>
                 ))}
               </div>
@@ -124,7 +125,7 @@ const NewDemandModal: React.FC<NewDemandModalProps> = ({ isOpen, onClose, onSubm
                 value={formData.requester}
                 onChange={(e) => setFormData({ ...formData, requester: e.target.value as DemandRequester })}
               >
-                {['ALEX BRUNO', 'JOGEISAKA', 'VANESSA', 'ALBERTO RIFER', 'GABRIEL', 'OUTRO'].map(name => (
+                {['ALEX BRUNO', 'JOGE ISAKA', 'VANESSA', 'ALBERTO RITER', 'GABRIEL RITER', 'LUCAS RITER', 'OUTRO'].map(name => (
                   <option key={name} value={name}>{name}</option>
                 ))}
               </select>
@@ -235,6 +236,19 @@ const NewDemandModal: React.FC<NewDemandModalProps> = ({ isOpen, onClose, onSubm
                     <option key={u.id} value={u.id}>{u.name} ({u.role})</option>
                   ))}
               </select>
+            </div>
+
+            {/* Data de Previsão */}
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
+                <CalendarIcon className="w-3 h-3 text-blue-500" /> Previsão de Fechamento
+              </label>
+              <input
+                type="date"
+                className="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-[20px] focus:ring-4 focus:ring-blue-100 focus:bg-white outline-none transition-all text-sm font-bold appearance-none cursor-pointer"
+                value={formData.expectedDate}
+                onChange={(e) => setFormData({ ...formData, expectedDate: e.target.value })}
+              />
             </div>
           </div>
 

@@ -5,7 +5,7 @@ import { TechnicalDemand, TaskStatus, TechnicalFile, User as UserType, UserRole 
 import {
   ArrowLeft, Download, FileText, Trash2, Calendar,
   User, Sparkles, Loader2, CheckCircle2, Save,
-  AlertCircle, ShieldAlert, FileSearch, Building2, Tag, FileCheck, AlertTriangle
+  AlertCircle, ShieldAlert, FileSearch, Building2, Tag, FileCheck, AlertTriangle, Clock
 } from 'lucide-react';
 import { generateTechnicalSummary } from '../services/geminiService';
 import html2canvas from 'html2canvas';
@@ -14,7 +14,7 @@ interface DemandDetailProps {
   demand: TechnicalDemand;
   onBack: () => void;
   onUpdate: (updated: TechnicalDemand) => Promise<void>;
-  onAutoSaveFile?: (file: File, folder: string) => Promise<void>;
+  onAutoSaveFile?: (file: File, folder: string, demandId?: string) => Promise<void>;
   onDelete?: (id: string) => Promise<void>;
   users: UserType[];
   userRole: UserRole;
@@ -111,9 +111,9 @@ const DemandDetail: React.FC<DemandDetailProps> = ({
       const link = document.createElement('a');
       link.href = dataUrl;
 
-      // Nome customizado conforme pedido: Parecer Tecnico Demanda: {TITULO}
+      // Nome customizado conforme pedido: CODE NOME DA DEMANDA
       const safeTitle = demand.title.replace(/[\\/:*?"<>|]/g, '_');
-      link.download = `Parecer Tecnico Demanda: ${safeTitle}.png`;
+      link.download = `${demand.code} ${safeTitle}.png`;
 
       link.click();
     } catch (err) {
@@ -171,11 +171,11 @@ const DemandDetail: React.FC<DemandDetailProps> = ({
           }
           const blob = new Blob([u8arr], { type: mime });
           const safeTitleForFile = demand.title.replace(/[\\/:*?"<>|]/g, '_');
-          const customFileName = `Parecer Tecnico Demanda: ${safeTitleForFile}.png`;
+          const customFileName = `${demand.code} ${safeTitleForFile}.png`;
           const file = new File([blob], customFileName, { type: 'image/png' });
 
           console.log(`[Step 2/4] Arquivo preparado (${(file.size / 1024).toFixed(2)} KB). Enviando...`);
-          await onAutoSaveFile(file, "Pareceres_Tecnicos");
+          await onAutoSaveFile(file, "Pareceres_Tecnicos", demand.id);
           console.log('[Step 2/4] Sucesso: Arquivo salvo na Central.');
         } catch (uploadErr: any) {
           console.error('[ERRO] Falha no upload do laudo:', uploadErr);
@@ -230,7 +230,7 @@ const DemandDetail: React.FC<DemandDetailProps> = ({
             />
             <div className="text-right">
               <h1 className="text-2xl font-black text-[#000080] uppercase">Laudo de Atendimento Técnico</h1>
-              <p className="text-sm font-bold text-gray-400 mt-1">ID: {demand.id}</p>
+              <p className="text-sm font-bold text-gray-400 mt-1">CÓD: {demand.code}</p>
             </div>
           </div>
 
@@ -241,7 +241,7 @@ const DemandDetail: React.FC<DemandDetailProps> = ({
             </div>
             <div>
               <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Setor Requisitante</p>
-              <p className="text-sm font-black text-gray-900">{demand.sector || 'NÃO INFORMADO'}</p>
+              <p className="text-sm font-black text-gray-900">{demand.sector === 'CLIENTE' ? 'CLIENTE' : (demand.sector || 'NÃO INFORMADO')}</p>
             </div>
             <div>
               <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Técnico Responsável</p>
@@ -286,7 +286,7 @@ const DemandDetail: React.FC<DemandDetailProps> = ({
       <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-2">
-            <span className="text-sm font-black text-[#000080]">{demand.id}</span>
+            <span className="text-sm font-black text-[#000080]">{demand.code}</span>
             {(() => {
               const hoursOpen = (new Date().getTime() - new Date(demand.createdAt).getTime()) / (1000 * 60 * 60);
               const isOverdue = demand.status === TaskStatus.OPEN && hoursOpen >= 48;
@@ -312,7 +312,7 @@ const DemandDetail: React.FC<DemandDetailProps> = ({
               <Building2 className="w-3 h-3" /> {demand.company}
             </span>
             <span className="text-xs font-bold text-gray-500 uppercase tracking-tight flex items-center gap-1">
-              <Tag className="w-3 h-3" /> {demand.sector || 'Vazio'}
+              <Tag className="w-3 h-3" /> {demand.sector === 'CLIENTE' ? 'CLIENTE' : (demand.sector || 'Vazio')}
             </span>
           </div>
         </div>
@@ -456,6 +456,19 @@ const DemandDetail: React.FC<DemandDetailProps> = ({
                   </p>
                 </div>
               </div>
+              {demand.expectedDate && (
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-blue-50 rounded-2xl text-blue-600">
+                    <Clock className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Previsão</p>
+                    <p className="text-sm font-bold text-gray-950">
+                      {new Date(demand.expectedDate).toLocaleDateString('pt-BR')}
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

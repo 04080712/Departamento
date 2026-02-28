@@ -137,6 +137,7 @@ export type Database = {
                 Row: {
                     assigned_to: string | null
                     channel: Database["public"]["Enums"]["demand_channel"]
+                    code: string | null
                     company: string
                     created_at: string | null
                     created_by: string | null
@@ -147,6 +148,7 @@ export type Database = {
                     sector: Database["public"]["Enums"]["demand_sector"] | null
                     status: Database["public"]["Enums"]["task_status"]
                     technical_details: string | null
+                    expected_date: string | null
                     title: string
                     type: string
                     updated_at: string | null
@@ -154,6 +156,7 @@ export type Database = {
                 Insert: {
                     assigned_to?: string | null
                     channel: Database["public"]["Enums"]["demand_channel"]
+                    code?: string | null
                     company: string
                     created_at?: string | null
                     created_by?: string | null
@@ -164,6 +167,7 @@ export type Database = {
                     sector?: Database["public"]["Enums"]["demand_sector"] | null
                     status?: Database["public"]["Enums"]["task_status"]
                     technical_details?: string | null
+                    expected_date?: string | null
                     title: string
                     type: string
                     updated_at?: string | null
@@ -171,6 +175,7 @@ export type Database = {
                 Update: {
                     assigned_to?: string | null
                     channel?: Database["public"]["Enums"]["demand_channel"]
+                    code?: string | null
                     company?: string
                     created_at?: string | null
                     created_by?: string | null
@@ -181,6 +186,7 @@ export type Database = {
                     sector?: Database["public"]["Enums"]["demand_sector"] | null
                     status?: Database["public"]["Enums"]["task_status"]
                     technical_details?: string | null
+                    expected_date?: string | null
                     title?: string
                     type?: string
                     updated_at?: string | null
@@ -302,7 +308,7 @@ export type Database = {
         Enums: {
             demand_channel: "WHATSAPP" | "BLIP" | "EMAIL" | "WA VE" | "REUNIAO"
             demand_priority: "LOW" | "MEDIUM" | "HIGH"
-            demand_sector: "VE" | "VI" | "ADM" | "PJ"
+            demand_sector: "VE" | "VI" | "ADM" | "PJ" | "CLIENTE"
             task_status: "OPEN" | "CLOSED"
             user_role: "ADMIN" | "CONTRIBUTOR" | "VENDEDOR" | "REGIONAL_ADMIN"
         }

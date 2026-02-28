@@ -121,7 +121,7 @@ const DemandsList: React.FC<DemandsListProps> = ({ demands, users, currentUser, 
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50/50 border-b border-gray-100">
-                <th className="px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-center">Fila</th>
+                <th className="px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-center">Cód</th>
                 <th className="px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Solicitação / Empresa</th>
                 <th className="px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Setor</th>
                 <th className="px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Responsável</th>
@@ -143,9 +143,9 @@ const DemandsList: React.FC<DemandsListProps> = ({ demands, users, currentUser, 
                     className={`group transition-all cursor-pointer hover:bg-blue-50/30 ${isClosed ? 'bg-gray-50/50 opacity-60' : ''} ${isOverdue ? 'bg-red-50/30' : ''}`}
                   >
                     <td className="px-8 py-6">
-                      <div className={`w-8 h-8 mx-auto rounded-xl flex items-center justify-center text-xs font-black shadow-sm ${isClosed ? 'bg-gray-200 text-gray-400' : isOverdue ? 'bg-red-600 text-white' : 'bg-[#000080] text-white'
+                      <div className={`w-12 h-8 mx-auto rounded-xl flex items-center justify-center text-[10px] font-black shadow-sm ${isClosed ? 'bg-gray-200 text-gray-400' : isOverdue ? 'bg-red-600 text-white' : 'bg-[#000080] text-white'
                         }`}>
-                        {index + 1}
+                        {demand.code}
                       </div>
                     </td>
                     <td className="px-8 py-6">
@@ -160,7 +160,7 @@ const DemandsList: React.FC<DemandsListProps> = ({ demands, users, currentUser, 
                     <td className="px-8 py-6">
                       <span className={`text-[10px] font-black px-2.5 py-1 rounded-lg border ${demand.sector ? 'bg-gray-100 text-gray-600 border-gray-200' : 'bg-gray-50 text-gray-300 border-dashed border-gray-100'
                         }`}>
-                        {demand.sector || 'Vazio'}
+                        {demand.sector === 'CLIENTE' ? 'CLIENTE' : (demand.sector || 'Vazio')}
                       </span>
                     </td>
                     <td className="px-8 py-6">

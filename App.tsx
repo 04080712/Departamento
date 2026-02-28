@@ -610,10 +610,10 @@ const App: React.FC = () => {
   // ==========================================
   // HANDLERS: ARQUIVOS E NOTIFICAÇÕES
   // ==========================================
-  const handleUploadFile = async (file: File, folder: string) => {
+  const handleUploadFile = async (file: File, folder: string, demandId?: string) => {
     if (!user) return;
     try {
-      const newFile = await uploadFile(file, folder, user.id);
+      const newFile = await uploadFile(file, folder, user.id, demandId);
       setFiles(prev => [newFile, ...prev]);
     } catch (err: any) {
       alert(`Erro no upload: ${err.message}`);
